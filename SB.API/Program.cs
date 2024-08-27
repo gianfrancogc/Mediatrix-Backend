@@ -6,6 +6,19 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var myCorsPolicy = "MyCorsPolicy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myCorsPolicy,
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+
 builder.Services.AddScoped<IGovernmentEntityRepository, FileGovernmentEntityRepository>();
 builder.Services.AddScoped<GovernmentEntityService>();
 
@@ -29,6 +42,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Government Entities API v1"));
 }
+// 2. Aplicar la política de CORS en la aplicación
+app.UseCors(myCorsPolicy);
+
 
 app.UseAuthorization();
 
