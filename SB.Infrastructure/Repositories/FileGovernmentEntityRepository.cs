@@ -1,4 +1,5 @@
-﻿using SB.Domain.Entities;
+﻿using Microsoft.Extensions.Configuration;
+using SB.Domain.Entities;
 using SB.Domain.Interfaces;
 using System.Text.Json;
 
@@ -6,10 +7,13 @@ namespace SB.Infrastructure.Repositories
 {
     public class FileGovernmentEntityRepository : IGovernmentEntityRepository
     {
-        private readonly string _filePath = "Database/government_entities.json";
+        private readonly string _filePath;
 
-        public FileGovernmentEntityRepository()
+        public FileGovernmentEntityRepository(IConfiguration configuration)
         {
+            // Obtener la ruta del archivo desde appsettings.json
+            _filePath = configuration["DatabaseSettings:GovernmentEntitiesFilePath"];
+
             if (!File.Exists(_filePath))
             {
                 Directory.CreateDirectory("Database");

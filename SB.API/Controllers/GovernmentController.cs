@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SB.Application.Services;
 using SB.Domain.Entities;
 
@@ -6,6 +7,7 @@ namespace SB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GovernmentController : ControllerBase
     {
         private readonly GovernmentEntityService _service;
@@ -51,5 +53,8 @@ namespace SB.API.Controllers
             await _service.DeleteAsync(id);
             return NoContent();
         }
+
+     
+
     }
 }

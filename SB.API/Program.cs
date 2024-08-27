@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SB.Application.Services;
 using SB.Domain.Interfaces;
@@ -21,6 +24,22 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IGovernmentEntityRepository, FileGovernmentEntityRepository>();
 builder.Services.AddScoped<GovernmentEntityService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration.GetValue<string>("ValidIssuer"),
+            ValidAudience = builder.Configuration.GetValue<string>("ValidAudience"), 
+            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("SecretKey"))) 
+        };
+    });
+
 
 builder.Host.UseSerilog((context, services, configuration) =>
 {
